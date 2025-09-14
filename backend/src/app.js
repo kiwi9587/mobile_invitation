@@ -8,7 +8,11 @@ const accountRouter = require('./routes/account');
 const seedRouter = require('./routes/seed');
 
 // Allow cross-origin requests from frontend dev server
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept']
+}));
 app.use(express.json());
 
 app.use('/api', invitationRouter);
