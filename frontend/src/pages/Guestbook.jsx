@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Toast from '../components/Toast';
 
 export default function Guestbook() {
   const [list, setList] = useState([]);
@@ -7,7 +8,7 @@ export default function Guestbook() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
+  const [toast, setToast] = useState(null);
   const [formErrors, setFormErrors] = useState({});
 
   const fetchList = () => {
@@ -45,10 +46,10 @@ export default function Guestbook() {
       if (!res.ok) throw new Error('등록 실패');
       setName('');
       setMessage('');
-      setSuccessMsg('방명록이 등록되었습니다.');
+      setToast({ message: '방명록이 등록되었습니다.', type: 'success' });
       fetchList();
     } catch (err) {
-      setError(err.message || '오류');
+      setToast({ message: err.message || '오류', type: 'error' });
     } finally {
       setSubmitting(false);
     }
@@ -61,11 +62,15 @@ export default function Guestbook() {
     <div className="container">
       <h1>방명록</h1>
 
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       <form className="card form-card" onSubmit={submit} noValidate>
-        <div aria-live="polite" className="small" style={{minHeight:20}}>
-          {successMsg && <span style={{color:'green'}}>{successMsg}</span>}
-          {error && <span style={{color:'crimson'}}>{error}</span>}
-        </div>
 
         <label className="label">이름</label>
         <input
